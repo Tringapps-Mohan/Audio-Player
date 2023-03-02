@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            width: 100%;
+            background-color: rgb(166, 166, 223);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-container {
+            width: 100%;
+        }
+
+        .card {
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 4px 8px 0px rgba(155, 155, 155, 0.18);
+            backdrop-filter: blur(10px);
+            width: 25%;
+            height: 50vh;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+
+        .card .thumbnail {
+            min-height: 70%;
+            box-shadow: 0px 0px 1px 0px #000;
+            border-radius: 10px;
+            min-width: 90%;
+            background-image: url("./piano.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card > div{
+            width: 90%;
+            min-height: 10%;
+        }
+
+
+
+        .card .duration .progress{
+            background-color: white;
+            height: 2px;
+            position: relative;
+            top: 50%;
+        }
+
+        .progress .current-progress{
+            width: 0%;
+            background-color: rebeccapurple;
+            height: 100%;
+        }
+
+        .card .play{
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        
+        .card .play > *{
+            width: 20%;
+            height: 100%;
+        }
+
+        .card .play:hover {
+            cursor: pointer;
+        }
+
+        .card .thumbnail .title{
+            position: absolute;
+            width: 90%;
+            height: 10%;
+            top: 65%;
+            left: 50%;
+            transform:translate(-50%,-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: #fff;
+            text-align: center;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            text-transform: capitalize;
+            font-size: x-large;
+            border-radius: inherit;
+        }
+
+        .play-icon{
+            background-image: url("./play-button.png");
+        }
+
+        .play-icon,.prev,.next{
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .prev{
+            background-image: url("./prev.png");
+        }
+
+        .next{
+            background-image: url("./next.png");
+        }
+
+        @media only screen and (max-width:1100px) {
+            .card {
+                width: 35%;
+            }
+        }
+
+        @media only screen and (max-width:700px) {
+            .card {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="card-container">
+        <div class="card">
+            <div class="thumbnail">
+                <div class="title">
+                    Fur elise
+                </div>
+            </div>
+            <div class="duration">
+                <div class="progress">
+                    <div class="current-progress"></div>
+                </div>
+            </div>
+            <div class="play">
+                <div class="prev"></div>
+                <div class="play-icon"></div>
+                <div class="next"></div>
+            </div>
+        </div>
+    </section>
+    <script>
+        const songs = [
+        "./fur-elise-1.mp3",
+        "./fur-elise-2.mp3"
+        ];
+        var a = new Audio("./fur-elise-2.mp3");
+        a.setAttribute("controls", "controls");
+        a.autoplay = true;
+        var b = document.querySelector(".play-icon");
+        var isStopped = true;
+        var prev = document.querySelector(".prev");
+        var next = document.querySelector(".next");
+        var currentSong = 0;
+        var progress = document.querySelector(".progress");
+        var currentProgress = document.querySelector(".current-progress");
+        a.src = songs[currentSong];
+        function setProgress(){
+            currentProgress.style.width = `${(progress.width*(a.currentTime*100/a.duration))}px`;
+        }
+        
+        b.addEventListener("click", () => {
+            if (isStopped) {
+                // b.innerHTML = "Pause";
+                b.style.backgroundImage = "url('pause.png')";
+                isStopped = false;
+                a.play();
+            } else {
+                // b.innerHTML = "Play";
+                b.style.backgroundImage = "url('play-button.png')";
+                isStopped = true;
+                a.pause();
+            }
+        });
+
+        next.addEventListener("click",()=>{
+            b.style.backgroundImage = "url('play-button.png')";
+            a.src = songs[++currentSong%songs.length];
+            a.pause();
+            isStopped = true;
+        });
+        prev.addEventListener("click",()=>{
+            b.style.backgroundImage = "url('play-button.png')";
+            if(currentSong - 1 < 0)
+                currentSong = songs.length-1;
+            else
+                currentSong--;
+            a.src = songs[currentSong%songs.length];
+            a.pause();
+            isStopped = true;
+        });
+
+        window.onload = ()=>{
+            setInterval(setProgress,1000);
+        }
+    </script>
+</body>
+
+</html>
